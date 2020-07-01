@@ -1,25 +1,93 @@
 <?php
-declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Repository\ItemRepository;
+use Doctrine\ORM\Mapping as ORM;
 
+/**
+ * @ORM\Entity(repositoryClass=ItemRepository::class)
+ */
 class Item
 {
-    public $name;
-    public $content;
-    public $creationDate;
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
+    private $id;
 
-    public function __construct(string $name, string $content, \DateTime $creationDate)
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $name;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $content;
+
+    /**
+     * @ORM\Column(type="datetime_immutable")
+     */
+    private $creationDate;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=ToDoList::class, inversedBy="items")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $toDoList;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
     {
         $this->name = $name;
-        $this->content = $content;
-        $this->creationDate= $creationDate;
+
+        return $this;
     }
 
-    public function isValid(): bool
+    public function getContent(): ?string
     {
-        return (isset($this->name) && isset($this->content) && strlen($this->content) <= 1000 && isset($this->creationDate) ) ?? false;
+        return $this->content;
     }
 
+    public function setContent(?string $content): self
+    {
+        $this->content = $content;
+
+        return $this;
+    }
+
+    public function getCreationDate(): ?\DateTimeImmutable
+    {
+        return $this->creationDate;
+    }
+
+    public function setCreationDate(\DateTimeImmutable $creationDate): self
+    {
+        $this->creationDate = $creationDate;
+
+        return $this;
+    }
+
+    public function getToDoList(): ?ToDoList
+    {
+        return $this->toDoList;
+    }
+
+    public function setToDoList(?ToDoList $toDoList): self
+    {
+        $this->toDoList = $toDoList;
+
+        return $this;
+    }
 }

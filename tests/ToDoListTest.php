@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-use App\Entity\ToDoList;
-use App\Entity\User;
-use App\Entity\Item;
+use App\Entity\ToDoListOld;
+use App\Entity\UserOld;
+use App\Entity\ItemOld;
 use App\Service\EmailService;
 use PHPUnit\Framework\TestCase;
 
@@ -18,25 +18,25 @@ class ToDoListTest extends TestCase
         parent::__construct($name, $data, $dataName);
         $this->emailServiceMock = $this->createMock(EmailService::class);
         $this->emailServiceMock->method('send')->willReturn(true);
-        $this->user = new User('dehaut.alix@gmail.com', 'alix', 'de Haut', 30);
+        $this->user = new UserOld('dehaut.alix@gmail.com', 'alix', 'de Haut', 30);
     }
 
     private function todoList()
     {
-        return new ToDoList($this->user, $this->emailServiceMock);
+        return new ToDoListOld($this->user, $this->emailServiceMock);
     }
 
     public function testAddUniqueItem()
     {
-        $item = new Item('Item', 'Lorem ipsum dolor sit amet', new DateTime());
+        $item = new ItemOld('Item', 'Lorem ipsum dolor sit amet', new DateTime());
         $toDoList = $this->todoList();
         $this->assertTrue($toDoList->isUnique($item));
     }
 
     public function testAddNonUniqueItem()
     {
-        $item = new Item('Item', 'Lorem ipsum dolor sit amet', new DateTime());
-        $item2 = new Item('Item', 'Lorem ipsum dolor sit amet', new DateTime());
+        $item = new ItemOld('Item', 'Lorem ipsum dolor sit amet', new DateTime());
+        $item2 = new ItemOld('Item', 'Lorem ipsum dolor sit amet', new DateTime());
         $toDoList = $this->todoList();
         $toDoList->canAddItem($item);
         $this->assertFalse($toDoList->isUnique($item2));
@@ -46,7 +46,7 @@ class ToDoListTest extends TestCase
     {
         $toDoList = $this->todoList();
         for ($i = 0 ; $i < 11; $i++){
-            $toDoList->addItem(new Item('Item'.$i, 'Lorem ipsum dolor sit amet', new DateTime()));
+            $toDoList->addItem(new ItemOld('Item'.$i, 'Lorem ipsum dolor sit amet', new DateTime()));
         }
         $this->assertFalse($toDoList->checkMaxSize());
     }
@@ -62,7 +62,7 @@ class ToDoListTest extends TestCase
         $dateTime = new DateTime();
         $dateTime->modify('- 30 minutes');
         $toDoList = $this->todoList();
-        $toDoList->addItem(new Item('Item', 'Lorem ipsum dolor sit amet', $dateTime));
+        $toDoList->addItem(new ItemOld('Item', 'Lorem ipsum dolor sit amet', $dateTime));
         $this->assertTrue($toDoList->checkWaitingTime());
     }
 
@@ -71,22 +71,22 @@ class ToDoListTest extends TestCase
         $dateTime = new DateTime();
         $dateTime->modify('- 10 minutes');
         $toDoList = $this->todoList();
-        $toDoList->addItem(new Item('Item', 'Lorem ipsum dolor sit amet', $dateTime));
+        $toDoList->addItem(new ItemOld('Item', 'Lorem ipsum dolor sit amet', $dateTime));
         $this->assertFalse($toDoList->checkWaitingTime());
     }
 
     public function testCanAddItemReturnNull(){
         $toDoList = $this->todoList();
-        $item = new Item('Item', 'Lorem ipsum dolor sit amet', new DateTime());
-        $item2 = new Item('Item', 'Lorem ipsum dolor sit amet', new DateTime());
+        $item = new ItemOld('Item', 'Lorem ipsum dolor sit amet', new DateTime());
+        $item2 = new ItemOld('Item', 'Lorem ipsum dolor sit amet', new DateTime());
         $toDoList->canAddItem($item);
         $this->assertEquals(null, $toDoList->canAddItem($item2));
     }
 
     public function testCanAddItemOnSuccess(){
         $toDoList = $this->todoList();
-        $item = new Item('Item', 'Lorem ipsum dolor sit amet', new DateTime());
-        $item2 = new Item('Item2', 'Lorem ipsum dolor sit amet', new DateTime());
+        $item = new ItemOld('Item', 'Lorem ipsum dolor sit amet', new DateTime());
+        $item2 = new ItemOld('Item2', 'Lorem ipsum dolor sit amet', new DateTime());
         $toDoList->canAddItem($item);
         $this->assertEquals(null, $toDoList->canAddItem($item2));
     }

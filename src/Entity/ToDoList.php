@@ -1,63 +1,102 @@
 <?php
 
-
 namespace App\Entity;
 
+use App\Repository\ToDoListRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 
-use App\Service\EmailService;
-
+/**
+ * @ORM\Entity(repositoryClass=ToDoListRepository::class)
+ */
 class ToDoList
 {
-    public $items = [];
-    public $lastCreationItem;
-    public $user;
-    private $emailService;
+    /**
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
+    private $id;
 
-    public function __construct(User $user, EmailService $emailService)
+    /**
+     * @ORM\OneToMany(targetEntity=Item::class, mappedBy="toDoList", orphanRemoval=true)
+     */
+    private $items;
+
+    /**
+     * @ORM\Column(type="datetime_immutable", nullable=true)
+     */
+    private $lastItemCreation;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="toDoLists")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user;
+
+    public function __construct()
     {
-        $this->user = $user;
-        $this->emailService = $emailService;
+        $this->items = new ArrayCollection();
     }
 
-    public function addItem(Item $item)
+    public function getId(): ?int
     {
-        $this->items[] = $item;
-        $this->lastCreationItem = $item->creationDate;
-        return $item;
+        return $this->id;
     }
 
-    public function canAddItem(Item $item)
+    /**
+     * @return Collection|Item[]
+     */
+    public function getItems(): Collection
     {
-        if ($this->isUnique($item) && $this->checkMaxSize() && $this->checkWaitingTime()){
-            $this->emailService->send($this->user);
-            return $this->addItem($item);
+        return $this->items;
+    }
+
+    public function addItem(Item $item): self
+    {
+        if (!$this->items->contains($item)) {
+            $this->items[] = $item;
+            $item->setToDoList($this);
         }
-        return null;
+
+        return $this;
     }
 
-    public function checkWaitingTime()
+    public function removeItem(Item $item): self
     {
-        if (!isset($this->lastCreationItem)) return true;
-
-        $now = new \DateTime('NOW');
-        $interval = $now->getTimestamp() - $this->lastCreationItem->getTimestamp();
-        $waitingTime = 30 * 60;
-        return $interval >= $waitingTime;
-    }
-
-    public function isUnique(Item $newItem)
-    {
-        foreach ($this->items as $item){
-            if ($item->name == $newItem->name){
-                return false;
+        if ($this->items->contains($item)) {
+            $this->items->removeElement($item);
+            // set the owning side to null (unless already changed)
+            if ($item->getToDoList() === $this) {
+                $item->setToDoList(null);
             }
         }
-        return true;
+
+        return $this;
     }
 
-    public function checkMaxSize()
+    public function getLastItemCreation(): ?\DateTimeImmutable
     {
-        return (count($this->items) >= 0) && (count($this->items) <= 10);
+        return $this->lastItemCreation;
     }
 
+    public function setLastItemCreation(?\DateTimeImmutable $lastItemCreation): self
+    {
+        $this->lastItemCreation = $lastItemCreation;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
 }

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Entity\Item;
+use App\Entity\ItemOld;
 use PHPUnit\Framework\TestCase;
 
 class ItemTest extends TestCase
@@ -18,13 +18,13 @@ class ItemTest extends TestCase
         dapibus sed ligula porttitor, convallis tincidunt quam. Pellentesque purus neque, fermentum vel malesuada vitae, 
         fermentum eget lacus. Proin blandit at mauris sed suscipit. Ut consectetur, elit ac molestie pretium, ipsum felis 
         rutrum elit, ut congue metus metus in purus. Curabitur ultrices lacus non orci sagittis rutrum. Quisque eget sem nullam.';
-        $item = new Item('Item', $content, new DateTime());
+        $item = new ItemOld('Item', $content, new DateTime());
         $this->assertFalse($item->isValid());
     }
 
     public function testItemOnValidContent()
     {
-        $item = new Item('Item', 'Lorem ipsum dolor sit amet', new DateTime());
+        $item = new ItemOld('Item', 'Lorem ipsum dolor sit amet', new DateTime());
         $this->assertTrue($item->isValid());
     }
 
