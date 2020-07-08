@@ -20,8 +20,10 @@ class ToDoListController extends AbstractController
      */
     public function index(ToDoListRepository $toDoListRepository): Response
     {
+        /** @var \App\Entity\User $user */
+        $user = $this->getUser();
         return $this->render('to_do_list/index.html.twig', [
-            'to_do_lists' => $toDoListRepository->findAll(),
+            'to_do_lists' => $toDoListRepository->findBy(['user'=> $user->getId()]),
         ]);
     }
 
@@ -31,6 +33,7 @@ class ToDoListController extends AbstractController
     public function new(Request $request): Response
     {
         $toDoList = new ToDoList();
+        $toDoList->setUser($this->getUser());
         $form = $this->createForm(ToDoListType::class, $toDoList);
         $form->handleRequest($request);
 

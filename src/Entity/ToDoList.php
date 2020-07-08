@@ -20,6 +20,11 @@ class ToDoList
     private $id;
 
     /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $name;
+
+    /**
      * @ORM\OneToMany(targetEntity=Item::class, mappedBy="toDoList", orphanRemoval=true)
      */
     private $items;
@@ -43,6 +48,18 @@ class ToDoList
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(string $name): self
+    {
+        $this->name = $name;
+
+        return $this;
     }
 
     /**

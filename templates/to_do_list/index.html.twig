@@ -3,33 +3,53 @@
 {% block title %}ToDoList index{% endblock %}
 
 {% block body %}
-    <h1>ToDoList index</h1>
+    <h2>Bonjour {{ app.user.firstname }}</h2>
+    <p>Voici vos listes en cours</p>
+    <div class="mb-4">
+        <a class="btn btn-lg btn-info " href="{{ path('to_do_list_new') }}">Nouvelle liste</a>
+    </div>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>LastItemCreation</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for to_do_list in to_do_lists %}
-            <tr>
-                <td>{{ to_do_list.id }}</td>
-                <td>{{ to_do_list.lastItemCreation ? to_do_list.lastItemCreation|date('Y-m-d H:i:s') : '' }}</td>
-                <td>
-                    <a href="{{ path('to_do_list_show', {'id': to_do_list.id}) }}">show</a>
-                    <a href="{{ path('to_do_list_edit', {'id': to_do_list.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="3">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+{#    <div class="page-content page-container" id="page-content">#}
+{#        <div class="padding">#}
+            <div class="row container d-flex justify-content-center">
+                {% for to_do_list in to_do_lists %}
+                <div class="col-lg-6">
+                    <div class="card px-3">
+                        <div class="card-body">
+                            <h4 class="card-title">{{ to_do_list.name }}</h4>
+                            <div class="add-items d-flex"> <input type="text" class="form-control todo-list-input" placeholder="What do you need to do today?"> <button class="add btn btn-primary font-weight-bold todo-list-add-btn">Add</button> </div>
+                            <div class="list-wrapper">
+                                <ul class="d-flex flex-column-reverse todo-list">
+                                    {% for item in to_do_list.items %}
+                                    <li>
+                                        <div class="form-check"> <label class="form-check-label"> <input class="checkbox" type="checkbox"> {{item.content}}<i class="input-helper"></i></label> </div> <i class="remove mdi mdi-close-circle-outline"></i>
+                                    </li>
+{#                                    <li class="completed">#}
+{#                                        <div class="form-check"> <label class="form-check-label"> <input class="checkbox" type="checkbox" checked=""> For what reason would it be advisable for me to think. <i class="input-helper"></i></label> </div> <i class="remove mdi mdi-close-circle-outline"></i>#}
+{#                                    </li>#}
+{#                                    <li>#}
+{#                                        <div class="form-check"> <label class="form-check-label"> <input class="checkbox" type="checkbox"> it be advisable for me to think about business content? <i class="input-helper"></i></label> </div> <i class="remove mdi mdi-close-circle-outline"></i>#}
+{#                                    </li>#}
+{#                                    <li>#}
+{#                                        <div class="form-check"> <label class="form-check-label"> <input class="checkbox" type="checkbox"> Print Statements all <i class="input-helper"></i></label> </div> <i class="remove mdi mdi-close-circle-outline"></i>#}
+{#                                    </li>#}
+{#                                    <li class="completed">#}
+{#                                        <div class="form-check"> <label class="form-check-label"> <input class="checkbox" type="checkbox" checked=""> Call Rampbo <i class="input-helper"></i></label> </div> <i class="remove mdi mdi-close-circle-outline"></i>#}
+{#                                    </li>#}
+{#                                    <li>#}
+{#                                        <div class="form-check"> <label class="form-check-label"> <input class="checkbox" type="checkbox"> Print bills <i class="input-helper"></i></label> </div> <i class="remove mdi mdi-close-circle-outline"></i>#}
+{#                                    </li>#}
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                    <p>Vous n'avez pas encore de liste</p>
+                {% endfor %}
+            </div>
+{#        </div>#}
+{#    </div>#}
 
-    <a href="{{ path('to_do_list_new') }}">Create new</a>
 {% endblock %}
