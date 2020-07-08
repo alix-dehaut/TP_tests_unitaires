@@ -1,4 +1,33 @@
 {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
+{#    {{ form_widget(form) }}#}
+
+<div class="row justify-content-around table-borderless">
+    <div class="col-6">
+        <table class="table">
+            <tbody>
+            <tr>
+                <th>Prénom</th>
+                <td>{{ form_widget(form.firstname) }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ form_widget(form.lastname)}}</td>
+            </tr>
+            <tr>
+                <th>Age</th>
+                <td>{{ form_widget(form.age) }}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{{ form_widget(form.email) }}</td>
+            </tr>
+            <tr>
+                <th>Password</th>
+                <td>{{ form_widget(form.password) }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+    <button class="btn btn-info mb-2">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }}

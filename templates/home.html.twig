@@ -1,0 +1,12 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Bienvenue{% endblock %}
+
+{% block body %}
+    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+        <h2>Bonjour {{ app.user.firstname }}</h2>
+        <p>Voici vos listes en cours</p>
+
+    {% endif %}
+
+{% endblock %}

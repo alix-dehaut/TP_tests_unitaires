@@ -38,9 +38,11 @@ class UserController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
+            print 'test';
 
             return $this->redirectToRoute('user_index');
         }
+        print 'toto';
 
         return $this->render('user/new.html.twig', [
             'user' => $user,
