@@ -14,7 +14,7 @@ class ItemType extends AbstractType
         $builder
             ->add('content')
             ->add('creationDate')
-            ->add('toDoList')
+//            ->add('toDoList')
         ;
     }
 

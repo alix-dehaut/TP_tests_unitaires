@@ -52,45 +52,15 @@ class ToDoListController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="to_do_list_show", methods={"GET"})
-     */
-    public function show(ToDoList $toDoList): Response
-    {
-        return $this->render('to_do_list/show.html.twig', [
-            'to_do_list' => $toDoList,
-        ]);
-    }
-
-    /**
-     * @Route("/{id}/edit", name="to_do_list_edit", methods={"GET","POST"})
-     */
-    public function edit(Request $request, ToDoList $toDoList): Response
-    {
-        $form = $this->createForm(ToDoListType::class, $toDoList);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('to_do_list_index');
-        }
-
-        return $this->render('to_do_list/edit.html.twig', [
-            'to_do_list' => $toDoList,
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
      * @Route("/{id}", name="to_do_list_delete", methods={"DELETE"})
      */
     public function delete(Request $request, ToDoList $toDoList): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$toDoList->getId(), $request->request->get('_token'))) {
+//        if ($this->isCsrfTokenValid('delete'.$toDoList->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($toDoList);
             $entityManager->flush();
-        }
+//        }
 
         return $this->redirectToRoute('to_do_list_index');
     }

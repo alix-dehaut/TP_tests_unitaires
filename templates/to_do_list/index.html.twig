@@ -16,29 +16,28 @@
                 <div class="col-lg-6">
                     <div class="card px-3">
                         <div class="card-body">
-                            <h4 class="card-title">{{ to_do_list.name }}</h4>
-                            <div class="add-items d-flex"> <input type="text" class="form-control todo-list-input" placeholder="What do you need to do today?"> <button class="add btn btn-primary font-weight-bold todo-list-add-btn">Add</button> </div>
+                            <div class="row d-flex justify-content-between">
+                                <h4 class="card-title text-info font-weight-bold">{{ to_do_list.name }}</h4>
+                                <form method="post" action="{{ path('to_do_list_delete', {'id': to_do_list.id}) }}">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ to_do_list.id) }}">
+                                    <button class="btn"><i class="fas fa-trash-alt text-danger"></i></button>
+                                </form>
+                            </div>
+                            <div class="add-items d-flex">
+                                <input type="text" class="form-control" id="todo-list-input{{to_do_list.id}}"> <button class="add btn btn-info font-weight-bold todo-list-add-btn" onclick="addItem({{to_do_list.id}});">Add</button>
+                            </div>
                             <div class="list-wrapper">
                                 <ul class="d-flex flex-column-reverse todo-list">
                                     {% for item in to_do_list.items %}
-                                    <li>
-                                        <div class="form-check"> <label class="form-check-label"> <input class="checkbox" type="checkbox"> {{item.content}}<i class="input-helper"></i></label> </div> <i class="remove mdi mdi-close-circle-outline"></i>
+                                    <li class="d-flex justify-content-between">
+                                        <p> {{item.content}} </p>
+                                        <form method="post" action="{{ path('item_delete', {'id': item.id}) }}">
+                                            <input type="hidden" name="_method" value="DELETE">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ item.id) }}">
+                                            <button class="btn"><i class="remove mdi mdi-close-circle-outline"></i></button>
+                                        </form>
                                     </li>
-{#                                    <li class="completed">#}
-{#                                        <div class="form-check"> <label class="form-check-label"> <input class="checkbox" type="checkbox" checked=""> For what reason would it be advisable for me to think. <i class="input-helper"></i></label> </div> <i class="remove mdi mdi-close-circle-outline"></i>#}
-{#                                    </li>#}
-{#                                    <li>#}
-{#                                        <div class="form-check"> <label class="form-check-label"> <input class="checkbox" type="checkbox"> it be advisable for me to think about business content? <i class="input-helper"></i></label> </div> <i class="remove mdi mdi-close-circle-outline"></i>#}
-{#                                    </li>#}
-{#                                    <li>#}
-{#                                        <div class="form-check"> <label class="form-check-label"> <input class="checkbox" type="checkbox"> Print Statements all <i class="input-helper"></i></label> </div> <i class="remove mdi mdi-close-circle-outline"></i>#}
-{#                                    </li>#}
-{#                                    <li class="completed">#}
-{#                                        <div class="form-check"> <label class="form-check-label"> <input class="checkbox" type="checkbox" checked=""> Call Rampbo <i class="input-helper"></i></label> </div> <i class="remove mdi mdi-close-circle-outline"></i>#}
-{#                                    </li>#}
-{#                                    <li>#}
-{#                                        <div class="form-check"> <label class="form-check-label"> <input class="checkbox" type="checkbox"> Print bills <i class="input-helper"></i></label> </div> <i class="remove mdi mdi-close-circle-outline"></i>#}
-{#                                    </li>#}
                                     {% endfor %}
                                 </ul>
                             </div>
@@ -52,4 +51,17 @@
 {#        </div>#}
 {#    </div>#}
 
+{% endblock %}
+{% block javascripts %}
+    <script>
+        function addItem(toDoListId) {
+            let input = document.getElementById("todo-list-input"+toDoListId);
+            $.ajax({
+                url : '/item/new',
+                type : 'POST', // Le type de la requête HTTP, ici devenu POST
+                data : {content: input.value,
+                    toDoList: toDoListId}
+            });
+        }
+    </script>
 {% endblock %}
